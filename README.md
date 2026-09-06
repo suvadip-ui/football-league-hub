@@ -16,6 +16,7 @@ Open `index.html` in a browser. No installation is required for the polished dem
 - Standings, upcoming fixtures, and top-scorer views
 - GoalLine Content Studio: Gemini generates a match preview or social post from a visible, approved fact pack
 - Human review and local approval step before a draft is treated as final
+- Transparent fact-only template fallback if Gemini is temporarily unavailable; it is visibly labelled and still requires human review
 - Responsive desktop and mobile layout
 - A demo-safe design that works without any key
 
@@ -47,7 +48,7 @@ In Vercel, add one additional Environment Variable:
 - Name: `GEMINI_API_KEY`
 - Value: your API key created in Google AI Studio
 
-Optional: set `GEMINI_MODEL` to a Gemini text model available to your key. If omitted, the app uses `gemini-2.5-flash`.
+Optional: set `GEMINI_MODEL` to a Gemini text model available to your key. If omitted, the app uses `gemini-3.8-flash`.
 
 Do not place `GEMINI_API_KEY` in `app.js`, `studio.js`, GitHub, or any browser setting. The key is used only by `api/generate-content.js` on Vercel.
 
