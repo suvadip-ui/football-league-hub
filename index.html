@@ -31,7 +31,7 @@
         </header>
 
         <section class="hero">
-          <div><p class="eyebrow">YOUR FOOTBALL, ONE PLACE</p><h1>Follow Europe’s <em>big five</em>.</h1><p class="hero-copy">Current tables, upcoming matches, and golden-boot races from England, Spain, Italy, Germany, and France.</p></div>
+          <div><p class="eyebrow">YOUR FOOTBALL, ONE PLACE</p><h1>Follow Europe’s <em>top six</em>.</h1><p class="hero-copy">Current tables, upcoming matches, and golden-boot races from Europe’s biggest domestic leagues and the Champions League.</p></div>
           <div class="hero-score"><span>THE WEEKEND</span><strong id="matchCount">9</strong><small>matches to watch</small></div>
         </section>
 
@@ -41,6 +41,7 @@
           <button class="league-card" data-league="seriea"><span class="flag">🇮🇹</span><span><small>ITALY</small><strong>Serie A</strong></span><b>›</b></button>
           <button class="league-card" data-league="bundesliga"><span class="flag">🇩🇪</span><span><small>GERMANY</small><strong>Bundesliga</strong></span><b>›</b></button>
           <button class="league-card" data-league="ligue1"><span class="flag">🇫🇷</span><span><small>FRANCE</small><strong>Ligue 1</strong></span><b>›</b></button>
+          <button class="league-card" data-league="championsleague"><span class="flag">🏆</span><span><small>EUROPE</small><strong>Champions League</strong></span><b>›</b></button>
         </section>
 
         <section class="dashboard-grid">
@@ -68,7 +69,7 @@
       </main>
     </div>
 
-    <dialog id="settingsDialog"><form method="dialog" class="settings-modal"><button class="close-dialog" value="cancel" aria-label="Close">×</button><p class="eyebrow">LIVE DATA SETUP</p><h2>Connect API-Football</h2><p>On the shared website, live data is loaded securely by the backend. Add a key here only when testing locally on your own computer.</p><label>Optional local API key<input id="apiKeyInput" type="password" placeholder="Your API-Football key" autocomplete="off" /></label><div class="modal-actions"><button value="cancel" class="secondary-button">Cancel</button><button id="saveKeyBtn" value="default" class="primary-button">Save &amp; connect</button></div><small>This browser saves the key locally. It is never added to the project files.</small></form></dialog>
+    <dialog id="settingsDialog"><form method="dialog" class="settings-modal"><button class="close-dialog" value="cancel" aria-label="Close">×</button><p class="eyebrow">LIVE DATA SETUP</p><h2>Secure live data</h2><p>The shared website loads tables and fixtures through its secure football-data.org backend. The API key is stored only in Vercel, never in this browser.</p><div class="modal-actions"><button value="cancel" class="secondary-button">Close</button><button id="saveKeyBtn" value="default" class="primary-button">Refresh live data</button></div><small>Local previews use demo data. Top-scorer cards are sample data on the free plan.</small></form></dialog>
     <script src="app.js"></script>
   </body>
 </html>
