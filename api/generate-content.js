@@ -10,6 +10,22 @@ function parseModelJson(text) {
   return JSON.parse(trimmed);
 }
 
+function buildTemplateFallback(facts, format) {
+  const byId = Object.fromEntries(facts.map(fact => [fact.id, fact]));
+  const competition = byId.competition?.value || 'Selected competition';
+  const claims = [byId.leader?.value, byId.challenger?.value, byId.fixture?.value].filter(Boolean);
+  const body = format === 'preview'
+    ? `${competition} fact-only review template. ${claims.join(' ')} This template requires human review before use.`
+    : `${competition} fact-only update: ${claims.join(' ')} Review the approved facts before publishing.`;
+  return {
+    source: 'template-fallback',
+    title: cleanText(`${competition}: fact-only review template`, 70),
+    content: cleanText(body, 420),
+    factsUsed: facts.filter(fact => ['competition', 'leader', 'challenger', 'fixture'].includes(fact.id)),
+    reviewNote: 'Template fallback: Gemini was temporarily unavailable. Check the approved facts and reviewer direction before approval.',
+  };
+}
+
 module.exports = async (request, response) => {
   if (request.method !== 'POST') return response.status(405).json({ error: 'Use POST for content generation.' });
   const apiKey = process.env.GEMINI_API_KEY;
@@ -38,6 +54,10 @@ module.exports = async (request, response) => {
     const payload = await upstream.json();
     if (!upstream.ok) {
       console.error('Gemini response error:', JSON.stringify(payload));
+      if (upstream.status === 503) {
+        response.setHeader('Cache-Control', 'no-store');
+        return response.status(200).json(buildTemplateFallback(facts, format));
+      }
       return response.status(upstream.status).json({ error: 'Gemini could not create a draft right now.' });
     }
     const text = payload.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('') || '';
