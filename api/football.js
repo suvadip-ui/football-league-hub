@@ -26,6 +26,7 @@ module.exports = async (request, response) => {
     );
     const payload = await upstream.json();
     const providerReturnedError = payload.errors && Object.keys(payload.errors).length > 0;
+    if (providerReturnedError) console.error('API-Football response error:', JSON.stringify(payload.errors));
     response.setHeader(
       'Cache-Control', upstream.ok && !providerReturnedError
         ? 's-maxage=900, stale-while-revalidate=3600'
