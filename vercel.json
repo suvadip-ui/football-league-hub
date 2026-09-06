@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/football.js": {
+      "maxDuration": 10
+    },
+    "api/generate-content.js": {
+      "maxDuration": 10
+    }
+  }
+}
