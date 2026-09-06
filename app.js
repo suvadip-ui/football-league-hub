@@ -36,7 +36,7 @@ async function loadLiveData(key) {
       const separator = apiPath.includes('?') ? '&' : '?';
       const url = apiKey
         ? `https://v3.football.api-sports.io/${apiPath}${separator}league=${leagueId}&season=${season}`
-        : `/api/football?resource=${resource}&league=${leagueId}&season=${season}`;
+        : `/api/football?resource=${resource}&league=${leagueId}&season=${season}&v=2`;
       const response = await fetch(url, apiKey ? {headers: {'x-apisports-key': apiKey}} : undefined);
       const json = await response.json();
       if (!response.ok || json.errors?.length || (json.errors && Object.keys(json.errors).length)) throw new Error(typeof json.errors === 'object' ? Object.values(json.errors).join(' ') : 'Could not load data');
