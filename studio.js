@@ -40,9 +40,11 @@ async function generateDraft() {
     const response = await fetch('/api/generate-content', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ format: activeFormat, facts: activeFacts, reviewNote: $('#reviewNote').value }) });
     const draft = await response.json();
     if (!response.ok) throw new Error(draft.error || 'Could not generate a draft.');
-    $('#draftFormat').textContent = activeFormat === 'preview' ? 'MATCH PREVIEW DRAFT' : 'SOCIAL POST DRAFT'; $('#draftTitle').textContent = draft.title; $('#draftContent').textContent = draft.content; $('#modelNote').textContent = draft.reviewNote || 'Draft created only from the listed facts.';
+    const fallback = draft.source === 'template-fallback';
+    $('#draftFormat').textContent = `${activeFormat === 'preview' ? 'MATCH PREVIEW DRAFT' : 'SOCIAL POST DRAFT'}${fallback ? ' · FACT-ONLY TEMPLATE FALLBACK' : ''}`; $('#draftTitle').textContent = draft.title; $('#draftContent').textContent = draft.content; $('#modelNote').textContent = draft.reviewNote || 'Draft created only from the listed facts.';
     $('#usedFacts').innerHTML = draft.factsUsed.map(fact => `<li><b>${fact.label}:</b> ${fact.value}</li>`).join('');
-    $('#factCheck').checked = false; $('#approveDraft').disabled = true; $('#approvalStatus').textContent = 'Needs review'; $('#approvalStatus').className = 'status-pill review-needed'; $('#reviewSection').hidden = false; $('#reviewSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    $('#reviewSection').classList.toggle('template-fallback', fallback);
+    $('#factCheck').checked = false; $('#approveDraft').disabled = true; $('#approvalStatus').textContent = fallback ? 'Template review needed' : 'Needs review'; $('#approvalStatus').className = 'status-pill review-needed'; $('#reviewSection').hidden = false; $('#reviewSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch (error) { alert(error.message); }
   finally { button.disabled = false; button.innerHTML = 'Generate fact-checked draft <span>→</span>'; }
 }
