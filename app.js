@@ -31,7 +31,7 @@ async function loadLiveData(key) {
   const season = currentSeason(); const leagueId = apiLeagueIds[key];
   $('#updatedAt').textContent = `Loading ${season}/${String(season + 1).slice(-2)} data…`;
   try {
-    const [standings, fixtures, scorers] = await Promise.all(['standings', 'fixtures', 'topscorers'].map(async resource => {
+    const fetchResource = async (resource) => {
       const apiPath = resource === 'topscorers' ? 'players/topscorers' : resource === 'fixtures' ? 'fixtures?next=3' : 'standings';
       const separator = apiPath.includes('?') ? '&' : '?';
       const url = apiKey
@@ -41,11 +41,19 @@ async function loadLiveData(key) {
       const json = await response.json();
       if (!response.ok || json.errors?.length || (json.errors && Object.keys(json.errors).length)) throw new Error(typeof json.errors === 'object' ? Object.values(json.errors).join(' ') : 'Could not load data');
       return json;
-    }));
+    };
+    const results = await Promise.allSettled(['standings', 'fixtures', 'topscorers'].map(fetchResource));
+    if (results[0].status !== 'fulfilled') throw results[0].reason;
+    const standings = results[0].value;
+    const fixtures = results[1].status === 'fulfilled' ? results[1].value : {response: []};
+    const scorers = results[2].status === 'fulfilled' ? results[2].value : {response: []};
     const data = apiToAppData(key, standings, fixtures, scorers);
     if (!data.table.length) throw new Error('No current-season data was returned for this league.');
+    const partialData = !data.fixtures.length || !data.scorers.length;
+    if (!data.fixtures.length) data.fixtures = demoData[key].fixtures;
+    if (!data.scorers.length) data.scorers = demoData[key].scorers;
     liveData[key] = data; renderLeague(key);
-    $('#updatedAt').textContent = `Live data · ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`;
+    $('#updatedAt').textContent = partialData ? 'Live standings · some details use demo data' : `Live data · ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`;
   } catch (error) {
     console.warn('Live data could not be loaded:', error);
     $('#updatedAt').textContent = 'Live sync unavailable · showing demo data';
