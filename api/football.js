@@ -25,7 +25,12 @@ module.exports = async (request, response) => {
       { headers: { 'x-apisports-key': apiKey } },
     );
     const payload = await upstream.json();
-    response.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=3600');
+    const providerReturnedError = payload.errors && Object.keys(payload.errors).length > 0;
+    response.setHeader(
+      'Cache-Control', upstream.ok && !providerReturnedError
+        ? 's-maxage=900, stale-while-revalidate=3600'
+        : 'no-store',
+    );
     return response.status(upstream.status).json(payload);
   } catch {
     return response.status(502).json({ error: 'Football data provider could not be reached.' });
