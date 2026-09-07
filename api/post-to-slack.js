@@ -2,6 +2,18 @@ function cleanText(value, limit) {
   return String(value || '').replace(/[\r\n]+/g, ' ').trim().slice(0, limit);
 }
 
+function createPublicPost({ title, content, source, facts }) {
+  if (source !== 'template-fallback') return { title, content };
+  const competition = facts.find(fact => fact.label.toLowerCase() === 'competition')?.value || 'Football';
+  const updates = facts
+    .filter(fact => /leader|challenger|fixture/i.test(fact.label))
+    .map(fact => fact.value);
+  return {
+    title: `${competition} matchday update`,
+    content: updates.join(' '),
+  };
+}
+
 module.exports = async (request, response) => {
   if (request.method !== 'POST') return response.status(405).json({ error: 'Use POST to send an approved demo post.' });
   const webhookUrl = process.env.SLACK_WEBHOOK_URL;
@@ -20,19 +32,18 @@ module.exports = async (request, response) => {
     })).filter(fact => fact.label && fact.value) : [];
     if (!title || !content || !facts.length) return response.status(400).json({ error: 'An approved draft and its checked facts are required.' });
 
-    const fallbackNotice = source === 'template-fallback' ? 'Source: approved fact pack (template fallback).\n\n' : '';
+    const publicPost = createPublicPost({ title, content, source, facts });
     const factsText = facts.map(fact => `${fact.label}: ${fact.value}`).join('\n');
-    const message = `Football League Hub - approved demo post\n${fallbackNotice}${title}\n\n${content}\n\nChecked source facts:\n${factsText}\n\nSent manually after human review. This is a private Slack demo-channel post.`;
+    const message = `Football League Hub\n${publicPost.title}\n\n${publicPost.content}\n\nSource facts:\n${factsText}`;
     const slackResponse = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text: message,
         blocks: [
-          { type: 'header', text: { type: 'plain_text', text: 'Football League Hub - Approved Demo Post', emoji: true } },
-          { type: 'section', text: { type: 'plain_text', text: `${fallbackNotice}${title}\n\n${content}`, emoji: true } },
-          { type: 'context', elements: [{ type: 'plain_text', text: 'Sent manually after human review to the configured private demo channel.', emoji: true }] },
-          { type: 'section', text: { type: 'plain_text', text: `Checked source facts\n${factsText}`, emoji: true } },
+          { type: 'header', text: { type: 'plain_text', text: 'Football League Hub', emoji: true } },
+          { type: 'section', text: { type: 'plain_text', text: `${publicPost.title}\n\n${publicPost.content}`, emoji: true } },
+          { type: 'section', text: { type: 'plain_text', text: `Source facts\n${factsText}`, emoji: true } },
         ],
       }),
     });
