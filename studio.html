@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071a12" />
+    <title>Suvadip's Content Studio · Football League Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="studio.css" />
+  </head>
+  <body>
+    <main class="studio-shell">
+      <header class="studio-topbar"><a class="back-link" href="index.html">← Dashboard</a><a class="studio-brand" href="index.html"><span>⚽</span> Suvadip Kolay's Football League Hub</a><span class="secure-chip">Secure Gemini draft</span></header>
+      <section class="studio-hero"><div><p class="eyebrow">TOPIC 05 - FREELANCE SPORTS JOURNALISM</p><h1>Suvadip's <em>Content Studio</em></h1><p>Turn approved current-season match facts into reviewable football-journalism drafts. AI assists; Suvadip makes the final editorial decision.</p></div><aside><strong>2</strong><span>content formats</span><small>Match preview + social post</small></aside></section>
+      <section class="studio-grid">
+        <article class="source-panel"><div class="panel-heading"><div><p class="eyebrow">STEP 1</p><h2>Approved fact pack</h2></div><span id="factStatus" class="status-pill">Loading facts</span></div><label class="field-label" for="studioLeague">Competition</label><select id="studioLeague"></select><div id="factPack" class="fact-pack" aria-live="polite"></div><p class="source-note">Only these facts are sent to Gemini. The source list is shown again with every generated draft.</p></article>
+        <article class="draft-panel"><div class="panel-heading"><div><p class="eyebrow">STEP 2</p><h2>Choose draft format</h2></div><span class="draft-label">AI draft only</span></div><div class="format-options"><button type="button" class="format-option selected" data-format="preview"><strong>Match preview</strong><small>Short website or newsletter preview</small></button><button type="button" class="format-option" data-format="social"><strong>Social post</strong><small>Concise post for Suvadip's football journal</small></button></div><label class="field-label" for="reviewNote">Optional reviewer direction</label><textarea id="reviewNote" maxlength="240" placeholder="Example: Make it more energetic, but do not add facts."></textarea><button id="generateDraft" class="generate-button" type="button" disabled>Generate fact-checked draft <span>→</span></button><p class="guardrail"><b>Guardrail:</b> The prompt prohibits invented scores, transfers, injuries, betting advice and unsupported statistics.</p></article>
+      </section>
+      <section id="reviewSection" class="review-section" hidden><div class="review-heading"><div><p class="eyebrow">STEP 3 - HUMAN REVIEW</p><h2>Review before publishing</h2></div><span id="approvalStatus" class="status-pill review-needed">Needs review</span></div><div class="draft-output"><div><p id="draftFormat" class="draft-label"></p><h3 id="draftTitle"></h3><p id="draftContent" class="draft-content"></p><p id="modelNote" class="model-note"></p></div><div class="facts-used"><p>FACTS USED IN THIS DRAFT</p><ul id="usedFacts"></ul></div></div><div class="review-actions"><label class="review-check"><input id="factCheck" type="checkbox" /> I checked the cited facts and approve this draft for Suvadip's independent sports-journalism work.</label><div><button id="reviseDraft" class="secondary-button" type="button">Generate revision</button><button id="approveDraft" class="approve-button" type="button" disabled>Approve draft</button><button id="postToSlack" class="post-button" type="button" hidden disabled>Post to Slack demo channel</button></div></div><p class="review-footnote">Approval unlocks an optional, separately confirmed post to your configured private Slack demo channel. It never posts automatically.</p></section>
+      <section class="workflow-strip"><span>INPUT</span><b>Approved match facts</b><i>→</i><span>AI</span><b>Gemini draft</b><i>→</i><span>HUMAN</span><b>Review and approval</b><i>→</i><span>OUTPUT</span><b>Optional Slack demo post</b></section>
+    </main>
+    <script src="studio.js"></script>
+  </body>
+</html>
