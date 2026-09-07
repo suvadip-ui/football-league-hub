@@ -26,11 +26,6 @@ const $ = (selector) => document.querySelector(selector);
 const backgroundVideo = document.querySelector('#backgroundVideo');
 if (backgroundVideo) {
   backgroundVideo.muted = true;
-  backgroundVideo.addEventListener('timeupdate', () => {
-    const nearLoopBoundary = backgroundVideo.duration && backgroundVideo.currentTime > backgroundVideo.duration - 0.45;
-    document.body.classList.toggle('video-loop-fade', Boolean(nearLoopBoundary));
-  });
-  backgroundVideo.addEventListener('seeked', () => document.body.classList.remove('video-loop-fade'));
 }
 function setTheme(theme) {
   document.body.dataset.theme = theme === 'pitch' ? '' : theme;
