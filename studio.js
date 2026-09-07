@@ -35,20 +35,40 @@ async function loadFactPack() {
   }
 }
 
+function buildBrowserFallback() {
+  const factById = Object.fromEntries(activeFacts.map(fact => [fact.id, fact]));
+  const competition = factById.competition?.value || 'Selected competition';
+  const claims = [factById.leader?.value, factById.challenger?.value, factById.fixture?.value].filter(Boolean);
+  const content = activeFormat === 'preview'
+    ? `${competition} fact-only review template. ${claims.join(' ')} This template requires human review before use.`
+    : `${competition} fact-only update: ${claims.join(' ')} Review the approved facts before publishing.`;
+  return {
+    source: 'template-fallback',
+    title: `${competition}: fact-only review template`,
+    content,
+    factsUsed: activeFacts.filter(fact => ['competition', 'leader', 'challenger', 'fixture'].includes(fact.id)),
+    reviewNote: 'Fact-only template fallback. Check the approved facts and reviewer direction before approval.'
+  };
+}
+
+function displayDraft(draft) {
+  const fallback = draft.source === 'template-fallback';
+  $('#draftFormat').textContent = `${activeFormat === 'preview' ? 'MATCH PREVIEW DRAFT' : 'SOCIAL POST DRAFT'}${fallback ? ' · FACT-ONLY TEMPLATE FALLBACK' : ''}`; $('#draftTitle').textContent = draft.title; $('#draftContent').textContent = draft.content; $('#modelNote').textContent = draft.reviewNote || 'Draft created only from the listed facts.';
+  $('#usedFacts').innerHTML = draft.factsUsed.map(fact => `<li><b>${fact.label}:</b> ${fact.value}</li>`).join('');
+  $('#reviewSection').classList.toggle('template-fallback', fallback);
+  currentDraft = { title: draft.title, content: draft.content, facts: draft.factsUsed, source: draft.source || '', approved: false };
+  $('#postToSlack').hidden = true; $('#postToSlack').disabled = true; $('#postToSlack').textContent = 'Post to Slack demo channel';
+  $('#factCheck').checked = false; $('#approveDraft').disabled = true; $('#approvalStatus').textContent = fallback ? 'Template review needed' : 'Needs review'; $('#approvalStatus').className = 'status-pill review-needed'; $('#reviewSection').hidden = false; $('#reviewSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 async function generateDraft() {
   const button = $('#generateDraft'); button.disabled = true; button.textContent = 'Creating reviewable draft...';
   try {
     const response = await fetch('/api/generate-content', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ format: activeFormat, facts: activeFacts, reviewNote: $('#reviewNote').value }) });
     const draft = await response.json();
     if (!response.ok) throw new Error(draft.error || 'Could not generate a draft.');
-    const fallback = draft.source === 'template-fallback';
-    $('#draftFormat').textContent = `${activeFormat === 'preview' ? 'MATCH PREVIEW DRAFT' : 'SOCIAL POST DRAFT'}${fallback ? ' · FACT-ONLY TEMPLATE FALLBACK' : ''}`; $('#draftTitle').textContent = draft.title; $('#draftContent').textContent = draft.content; $('#modelNote').textContent = draft.reviewNote || 'Draft created only from the listed facts.';
-    $('#usedFacts').innerHTML = draft.factsUsed.map(fact => `<li><b>${fact.label}:</b> ${fact.value}</li>`).join('');
-    $('#reviewSection').classList.toggle('template-fallback', fallback);
-    currentDraft = { title: draft.title, content: draft.content, facts: draft.factsUsed, source: draft.source || '', approved: false };
-    $('#postToSlack').hidden = true; $('#postToSlack').disabled = true; $('#postToSlack').textContent = 'Post to Slack demo channel';
-    $('#factCheck').checked = false; $('#approveDraft').disabled = true; $('#approvalStatus').textContent = fallback ? 'Template review needed' : 'Needs review'; $('#approvalStatus').className = 'status-pill review-needed'; $('#reviewSection').hidden = false; $('#reviewSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  } catch (error) { alert(error.message); }
+    displayDraft(draft);
+  } catch (error) { displayDraft(buildBrowserFallback()); }
   finally { button.disabled = false; button.innerHTML = 'Generate fact-checked draft <span>→</span>'; }
 }
 
