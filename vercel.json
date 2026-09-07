@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/football.js": {
+      "maxDuration": 10
+    },
+    "api/generate-content.js": {
+      "maxDuration": 10
+    },
+    "api/post-to-slack.js": {
+      "maxDuration": 10
+    }
+  }
+}
