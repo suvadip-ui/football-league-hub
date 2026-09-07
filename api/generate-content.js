@@ -22,7 +22,7 @@ function buildTemplateFallback(facts, format) {
     title: cleanText(`${competition}: fact-only review template`, 70),
     content: cleanText(body, 420),
     factsUsed: facts.filter(fact => ['competition', 'leader', 'challenger', 'fixture'].includes(fact.id)),
-    reviewNote: 'Template fallback: Gemini was temporarily unavailable. Check the approved facts and reviewer direction before approval.',
+    reviewNote: 'Fact-only template fallback: Gemini did not return a usable draft. Check the approved facts and reviewer direction before approval.',
   };
 }
 
@@ -54,7 +54,7 @@ module.exports = async (request, response) => {
     const payload = await upstream.json();
     if (!upstream.ok) {
       console.error('Gemini response error:', JSON.stringify(payload));
-      if (upstream.status === 503) {
+      if ([429, 500, 503].includes(upstream.status)) {
         response.setHeader('Cache-Control', 'no-store');
         return response.status(200).json(buildTemplateFallback(facts, format));
       }
@@ -71,6 +71,9 @@ module.exports = async (request, response) => {
     return response.status(200).json({ title, content, factsUsed: facts.filter(fact => usedIds.includes(fact.id)), reviewNote: cleanText(draft.review_note, 140) });
   } catch (error) {
     console.error('Content drafting error:', error.message);
-    return response.status(502).json({ error: 'The draft could not pass the content safety check. Please try again.' });
+    // A blocked or malformed model response must never stop the supervised review flow.
+    // The fallback uses only the already displayed, approved facts and stays visibly labelled.
+    response.setHeader('Cache-Control', 'no-store');
+    return response.status(200).json(buildTemplateFallback(facts, format));
   }
 };
