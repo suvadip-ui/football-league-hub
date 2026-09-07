@@ -24,9 +24,18 @@ const liveData = {};
 let currentLeague = 'premier'; let fixtureOffset = 0;
 const $ = (selector) => document.querySelector(selector);
 const backgroundVideo = document.querySelector('#backgroundVideo');
+function resumeBackgroundVideo() {
+  if (!backgroundVideo || document.hidden || !backgroundVideo.paused) return;
+  backgroundVideo.play().catch(() => {});
+}
 if (backgroundVideo) {
   backgroundVideo.muted = true;
   backgroundVideo.loop = true;
+  backgroundVideo.addEventListener('canplay', () => backgroundVideo.play().catch(() => {}));
+  backgroundVideo.addEventListener('pause', () => window.setTimeout(resumeBackgroundVideo, 60));
+  backgroundVideo.addEventListener('stalled', () => window.setTimeout(resumeBackgroundVideo, 120));
+  backgroundVideo.addEventListener('ended', () => { backgroundVideo.currentTime = 0; resumeBackgroundVideo(); });
+  document.addEventListener('visibilitychange', resumeBackgroundVideo);
 }
 function setTheme(theme) {
   document.body.dataset.theme = theme === 'pitch' ? '' : theme;
@@ -43,7 +52,6 @@ function setBackground(background) {
   if (backgroundVideo && source && source.getAttribute('src') !== backgroundSources[selectedBackground]) {
     source.src = backgroundSources[selectedBackground];
     backgroundVideo.load();
-    backgroundVideo.play().catch(() => {});
   }
   localStorage.setItem('footballHubBackground', selectedBackground);
   document.querySelectorAll('[data-background-choice]').forEach(button => button.classList.toggle('selected', button.dataset.backgroundChoice === selectedBackground));
