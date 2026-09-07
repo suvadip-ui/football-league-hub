@@ -24,8 +24,39 @@ const liveData = {};
 let currentLeague = 'premier'; let fixtureOffset = 0;
 const $ = (selector) => document.querySelector(selector);
 const backgroundVideo = document.querySelector('#backgroundVideo');
+let reverseBackgroundFrame;
+let reverseBackgroundPreviousTime;
+function playBackgroundForward() {
+  if (!backgroundVideo) return;
+  if (reverseBackgroundFrame) cancelAnimationFrame(reverseBackgroundFrame);
+  reverseBackgroundFrame = undefined;
+  backgroundVideo.playbackRate = 1;
+  backgroundVideo.play().catch(() => {});
+}
+function playBackgroundReverse() {
+  if (!backgroundVideo || !Number.isFinite(backgroundVideo.duration) || backgroundVideo.duration <= 0) return;
+  backgroundVideo.pause();
+  backgroundVideo.currentTime = Math.max(0, Math.min(backgroundVideo.currentTime, backgroundVideo.duration - 0.03));
+  reverseBackgroundPreviousTime = performance.now();
+  const stepBack = (now) => {
+    const elapsed = Math.min((now - reverseBackgroundPreviousTime) / 1000, 0.05);
+    reverseBackgroundPreviousTime = now;
+    const nextTime = backgroundVideo.currentTime - elapsed;
+    if (nextTime <= 0.02) {
+      backgroundVideo.currentTime = 0;
+      playBackgroundForward();
+      return;
+    }
+    backgroundVideo.currentTime = nextTime;
+    reverseBackgroundFrame = requestAnimationFrame(stepBack);
+  };
+  reverseBackgroundFrame = requestAnimationFrame(stepBack);
+}
 if (backgroundVideo) {
   backgroundVideo.muted = true;
+  backgroundVideo.loop = false;
+  backgroundVideo.addEventListener('ended', playBackgroundReverse);
+  backgroundVideo.addEventListener('loadeddata', playBackgroundForward);
 }
 function setTheme(theme) {
   document.body.dataset.theme = theme === 'pitch' ? '' : theme;
@@ -40,9 +71,10 @@ function setBackground(background) {
   const selectedBackground = backgroundSources[background] ? background : 'football';
   const source = document.querySelector('#backgroundVideoSource');
   if (backgroundVideo && source && source.getAttribute('src') !== backgroundSources[selectedBackground]) {
+    if (reverseBackgroundFrame) cancelAnimationFrame(reverseBackgroundFrame);
+    reverseBackgroundFrame = undefined;
     source.src = backgroundSources[selectedBackground];
     backgroundVideo.load();
-    backgroundVideo.play().catch(() => {});
   }
   localStorage.setItem('footballHubBackground', selectedBackground);
   document.querySelectorAll('[data-background-choice]').forEach(button => button.classList.toggle('selected', button.dataset.backgroundChoice === selectedBackground));
