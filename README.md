@@ -35,6 +35,12 @@ Extract the ZIP and open `index.html` in a browser. This is useful for reviewing
 
 The optional Slack action is a separate private demonstration step. It requires confirmation and does not need to be used for normal testing.
 
+## Evaluation metrics and deployment limitations
+
+The project can be evaluated with two practical measures: the percentage of drafts approved without a revision request, and the average time from an approved fact pack to a reviewable draft compared with manual writing. These measures can be recorded during a supervised demonstration.
+
+The dashboard supports the content workflow by supplying visible source context; it is not intended to replace editorial judgement. Live league coverage depends on the football-data.org plan, ISL is a clearly labelled sample-data view, and Gemini or Groq may be temporarily unavailable. When a provider fails, the app presents a visibly labelled fact-only template rather than claiming it is AI-generated. A public deployment would require quota monitoring, coverage review and continued human editorial approval.
+
 ## Included now
 
 - League selector for England, Spain, Italy, Germany, France, the UEFA Champions League, and ISL sample data
