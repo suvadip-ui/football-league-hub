@@ -16,11 +16,11 @@ The product interface is named **Football League Hub**. The above title is the s
 
 ## 4. Description of the project (50 words)
 
-Football League Hub is a responsive web dashboard for following the current Premier League, La Liga, Serie A, Bundesliga, Ligue 1 and UEFA Champions League seasons. It presents standings, fixtures, scorer views, official-source links and theme choices. Suvadip's Content Studio creates reviewable fact-based football content drafts with human approval required.
+Suvadip's Content Studio is a brand-safe football content generator for an independent sports journalist. It turns a visible, approved fact pack from Football League Hub into reviewable match previews or social posts. Gemini or Groq generates drafts; human review, source visibility and an optional Slack demonstration keep editorial decisions controlled.
 
 ## 5. Problem / Opportunity Statement (50 words)
 
-Football fans often rely on separate websites, social feeds and searches to compare several leagues, find upcoming fixtures and verify standings. This creates a fragmented experience and makes source checking slow. The project addresses this by bringing selected current-season information, accessible navigation and organiser links into one clear, mobile-friendly dashboard.
+Independent sports journalists need timely football updates, but gathering facts, drafting content and checking claims across sources can be slow and risks unsupported statements. The project creates an approved fact pack: the dashboard supplies context, while Content Studio generates a constrained draft for human verification before sharing.
 
 ## 6. AI Tools / Applications used
 
@@ -33,8 +33,14 @@ Football fans often rely on separate websites, social feeds and searches to comp
 
 ## 7. Potential outcome / benefits from the project (50 words)
 
-Football League Hub gives football followers a quicker organised way to monitor competitions and verify information through official sources. Responsive design supports phone and desktop use. The Content Studio demonstrates responsible generative AI by limiting drafts to approved facts, displaying fallback status and keeping human review in control of sharing.
+The project supports faster, more controlled football-journalism drafting while preserving editorial ownership. Its usefulness can be measured by drafts approved without revision and time from an approved fact pack to a reviewable draft, compared with manual drafting. The dashboard remains a useful context and source-checking tool for the workflow.
 
 ## 8. Access to project files / data
 
 This submission package contains the complete source folder, supporting PDFs, interface screenshots and README instructions. Extract `Project Files.zip` and open `README.md` for the recommended live and local testing steps. Private API keys and webhook addresses are deliberately excluded from the submitted files.
+
+## Evaluation metrics and deployment limitations
+
+Suggested success metrics are: (1) percentage of drafts approved without a revision request, and (2) average time from approved fact pack to a reviewable draft compared with manual writing. These can be recorded during a supervised test session.
+
+Current limitations: live league coverage depends on the football-data.org plan; ISL remains a clearly labelled sample-data view; and Gemini or Groq may be temporarily unavailable, in which case the product visibly provides a fact-only template rather than representing it as AI output. A public production deployment would require API-quota monitoring, data-coverage review and continued human editorial approval.
