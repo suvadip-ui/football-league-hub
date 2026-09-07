@@ -48,7 +48,7 @@ The optional Slack action is a separate private demonstration step. It requires 
 
 ## Background video
 
-The dashboard includes two muted, looping background choices—an abstract football glow and a stadium-pitch animation—plus an animated football badge supplied by the project owner. The selected background is saved on the viewer's device. These are decorative visuals, have no audio, and are hidden for reduced-motion users. They must not be replaced with match footage or other third-party media without the necessary rights.
+The dashboard includes two muted background choices—an abstract football glow and a stadium-pitch animation—plus an animated football badge supplied by the project owner. Each background plays forward, then in reverse, in a continuous cycle; the selected background is saved on the viewer's device. These are decorative visuals, have no audio, and are hidden for reduced-motion users. They must not be replaced with match footage or other third-party media without the necessary rights.
 
 ## Before submission: live data
 
