@@ -78,7 +78,7 @@ In Vercel, add one additional Environment Variable:
 - Name: `GEMINI_API_KEY`
 - Value: your API key created in Google AI Studio
 
-Optional: set `GEMINI_MODEL` to a Gemini text model available to your key. If omitted, the app uses `gemini-3.8-flash`.
+Optional: set `GEMINI_MODEL` to a Gemini text model available to your key. If omitted, the app uses `gemini-3.6-flash`.
 
 Do not place `GEMINI_API_KEY` in `app.js`, `studio.js`, GitHub, or any browser setting. The key is used only by `api/generate-content.js` on Vercel.
 
