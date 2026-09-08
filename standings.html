@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071a12" />
+    <title>Full Standings · Football League Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="standings.css" />
+  </head>
+  <body>
+    <main class="standings-page">
+      <header><a class="back-link" href="index.html">← Back to dashboard</a><a class="brand" href="index.html"><span>⚽</span> Suvadip's Football League Hub</a></header>
+      <section class="page-intro"><p>COMPLETE LEAGUE TABLE</p><h1 id="competitionTitle">Premier League</h1><span id="status" aria-live="polite">Loading live standings…</span></section>
+      <nav id="competitionTabs" class="competition-tabs" aria-label="Choose competition"></nav>
+      <section class="standings-card"><div class="table-wrap"><table><thead><tr><th>#</th><th>CLUB</th><th>PL</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>PTS</th></tr></thead><tbody id="fullStandings"></tbody></table></div><p id="qualificationLegend" class="qualification-legend" hidden></p><div id="tablePager" class="table-pager" hidden><button id="previousPage" type="button">← Previous</button><span id="pageSummary">Teams 1–10</span><button id="nextPage" type="button">Next →</button></div><div id="islNotice" class="isl-notice" hidden><p>ISL live standings are not included in the free data provider.</p><a href="https://www.indiansuperleague.com/standings" target="_blank" rel="noopener noreferrer">↗ View official ISL standings</a></div></section>
+      <p class="source-note">Live standings are supplied through the app's secure data service. The official source link is provided for every competition.</p>
+    </main>
+    <script src="standings.js"></script>
+  </body>
+</html>
